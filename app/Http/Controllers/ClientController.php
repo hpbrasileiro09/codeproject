@@ -2,33 +2,45 @@
 
 namespace CodeProject\Http\Controllers;
 
+use CodeProject\Entities\Client;
+
+use CodeProject\Repositories\ClientRepositoryEloquent;
+
 use Illuminate\Http\Request;
 
 use CodeProject\Http\Requests;
 
 class ClientController extends Controller
 {
+
+    protected $clientRepository;
+
+    public function __construct(
+        ClientRepositoryEloquent $clientRepository
+    ) {
+        $this->clientRepository = $clientRepository;
+    }    
     
     public function index() 
     {
-    	return \CodeProject\Client::all();
+    	return $this->clientRepository->all();
     }
     
     public function store(Request $request)
     {
-    	return \CodeProject\Client::create($request->all());
+    	return Client::create($request->all());
     }
     
     public function show($id)
     {
-    	return \CodeProject\Client::find($id);
+    	return Client::find($id);
     }
     
     public function destroy($id)
     {
 		try
 	    {
-	    	\CodeProject\Client::find($id)->delete();
+	    	Client::find($id)->delete();
 	        return response()->json(['OK']);
 	    }
 	    catch (\Exception $e)

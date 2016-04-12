@@ -149,6 +149,11 @@ return [
         Illuminate\View\ViewServiceProvider::class,
 
         /*
+         * Prettus Repository Service Providers...
+         */
+        Prettus\Repository\Providers\RepositoryServiceProvider::class,
+
+        /*
          * Application Service Providers...
          */
         CodeProject\Providers\AppServiceProvider::class,
