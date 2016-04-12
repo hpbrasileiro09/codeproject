@@ -32,7 +32,15 @@ class ClientController extends Controller
 
     public function update(Request $request, $id)
     {
-        return $this->repository->find($id)->update($request->all());
+        try
+        {
+            $this->repository->find($id)->update($request->all());
+            return response()->json(['OK']);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json(['NOK' => $e->getMessage()]);
+        }       
     }
     
     public function show($id)
