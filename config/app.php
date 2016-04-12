@@ -161,6 +161,11 @@ return [
         CodeProject\Providers\EventServiceProvider::class,
         CodeProject\Providers\RouteServiceProvider::class,
 
+        /*
+         * CodeProject Repository Providers...
+         */
+        CodeProject\Providers\CodeProjectRepositoryProvider::class,
+
     ],
 
     /*

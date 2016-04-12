@@ -4,7 +4,7 @@ namespace CodeProject\Http\Controllers;
 
 use CodeProject\Entities\Client;
 
-use CodeProject\Repositories\ClientRepositoryEloquent;
+use CodeProject\Repositories\ClientRepository;
 
 use Illuminate\Http\Request;
 
@@ -16,7 +16,7 @@ class ClientController extends Controller
     protected $clientRepository;
 
     public function __construct(
-        ClientRepositoryEloquent $clientRepository
+        ClientRepository $clientRepository
     ) {
         $this->clientRepository = $clientRepository;
     }    
