@@ -15,8 +15,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::put('client/{id}', 'ClientController@update');
 Route::get('client', 'ClientController@index');
 Route::post('client', 'ClientController@store');
 Route::get('client/{id}', 'ClientController@show');
 Route::delete('client/{id}', 'ClientController@destroy');
-Route::post('client/{id}', 'ClientController@update');

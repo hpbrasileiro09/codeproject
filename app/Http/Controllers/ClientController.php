@@ -32,15 +32,15 @@ class ClientController extends Controller
     {
     	return $this->repository->all();
     }
-    
-    public function store(Request $request)
-    {
-    	return $this->service->create($request->all());
-    }
 
     public function update(Request $request, $id)
     {
         return $this->service->update($request->all(), $id);
+    }
+    
+    public function store(Request $request)
+    {
+    	return $this->service->create($request->all());
     }
     
     public function show($id)
