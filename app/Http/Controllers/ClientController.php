@@ -18,15 +18,15 @@ class ClientController extends Controller
     {
     	return \CodeProject\Client::create($request->all());
     }
-
-    public function update(Request $request, $id)
-    {
-        return response()->json(\CodeProject\Client::find($id)->update($request->all()));
-    }
     
     public function show($id)
     {
     	return \CodeProject\Client::find($id);
+    }
+
+    public function update(Request $request, $id)
+    {
+        return response()->json(\CodeProject\Client::find($id)->update($request->all()));
     }
     
     public function destroy($id)
