@@ -20,4 +20,14 @@ class Project extends Model implements Transformable
     	'due_date',
     ];
 
+    public function client()
+    {
+      return $this->belongsTo(Client::class);
+    }
+
+    public function owner()
+    {
+      return $this->belongsTo(User::class, 'owner_id', 'id');
+    }
+
 }
