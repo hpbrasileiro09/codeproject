@@ -154,17 +154,23 @@ return [
         Prettus\Repository\Providers\RepositoryServiceProvider::class,
 
         /*
+         * LucaDegasperi Providers...
+         */
+        LucaDegasperi\OAuth2Server\Storage\FluentStorageServiceProvider::class,
+        LucaDegasperi\OAuth2Server\OAuth2ServerServiceProvider::class,
+
+        /*
+         * CodeProject Repository Providers...
+         */
+        CodeProject\Providers\CodeProjectRepositoryProvider::class,
+
+        /*
          * Application Service Providers...
          */
         CodeProject\Providers\AppServiceProvider::class,
         CodeProject\Providers\AuthServiceProvider::class,
         CodeProject\Providers\EventServiceProvider::class,
         CodeProject\Providers\RouteServiceProvider::class,
-
-        /*
-         * CodeProject Repository Providers...
-         */
-        CodeProject\Providers\CodeProjectRepositoryProvider::class,
 
     ],
 
@@ -211,6 +217,8 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'Authorizer' => LucaDegasperi\OAuth2Server\Facades\Authorizer::class,
+        //'Authorizer'=> 'LucaDegasperi\OAuth2Server\Facades\Authorizer',
 
     ],
 
