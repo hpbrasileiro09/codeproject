@@ -35,12 +35,44 @@ class ProjectRepositoryEloquent extends BaseRepository implements ProjectReposit
         return ProjectValidator::class;
     }
 
-
     /**
      * Boot up the repository, pushing criteria
      */
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+    }
+
+    public function isOwner($projectId, $userId) 
+    {
+        if (count($this->findWhere(['id' => $projectId, 'owner_id' => $userId])))
+        {   
+            return true;
+        }
+        return false;
+    }
+
+    public function isOwner_($projectId, $userId) 
+    {
+        $resp = $this->findWhere(['id' => $projectId, 'owner_id' => $userId]);
+        if ($resp == '[]')
+        {   
+            return false;
+        }
+        return true;
+    }
+
+    public function hasMember($projectId, $memberId)
+    {
+        $project = $this->find($projectId);
+
+        foreach($project->members as $member) 
+        {
+            if ($member->id == $memberId)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
