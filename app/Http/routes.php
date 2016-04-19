@@ -19,15 +19,19 @@ Route::post('oauth/access_token', function () {
 	return Response::json(Authorizer::issueAccessToken());
 });
 
+Route::post('oauth2/token', function () {
+	return Response::json(Authorizer::issueAccessToken());
+});
+
 Route::group(['middleware' => 'oauth'], function() {
 
 	Route::resource('client', 'ClientController', ['except' => ['create','edit']]);
 
-	//Route::group(['middleware' => 'check-project-owner'], function() {
+	Route::group(['middleware' => 'check-project-owner'], function() {
 	
 		Route::resource('project', 'ProjectController', ['except' => ['create','edit']]);
 	
-	//});
+	});
 
 	Route::group(['prefix' => 'project'], function() {
 
