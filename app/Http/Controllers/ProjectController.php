@@ -5,6 +5,7 @@ namespace CodeProject\Http\Controllers;
 use CodeProject\Repositories\ProjectRepository;
 use CodeProject\Services\ProjectService;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 use CodeProject\Http\Requests;
 
 class ProjectController extends Controller
@@ -40,25 +41,35 @@ class ProjectController extends Controller
 
     public function update(Request $request, $id)
     {
-        return $this->service->update($request->all(), $id);
+        try {
+            return $this->service->update($request->all(), $id);
+        } catch (\Exception $e) {
+            return ['error'=>true, 'Projeto não encontrado.'];
+        }
+
     }
     
     public function show($id)
     {
-    	return $this->repository->with(['client','owner'])->find($id);
+        try {
+            return $this->repository->with(['client','owner'])->find($id);
+        } catch (\Exception $e) {
+            return ['error'=>true, 'Projeto não encontrado.'];
+        }        
     }
     
     public function destroy($id)
     {
-		try
-	    {
-	    	$this->repository->find($id)->delete();
-	        return response()->json(['OK']);
-	    }
-	    catch (\Exception $e)
-	    {
-	        return response()->json(['NOK' => $e->getMessage()]);
-	    }    	
+        try {
+            $this->repository->find($id)->delete();
+            return ['success'=>true, 'Projeto deletado com sucesso!'];
+        } catch (QueryException $e) {
+            return ['error'=>true, 'Projeto não pode ser apagado pois existe um ou mais clientes vinculados a ele.'];
+        } catch (ModelNotFoundException $e) {
+            return ['error'=>true, 'Projeto não encontrado.'];
+        } catch (\Exception $e) {
+            return ['error'=>true, 'Ocorreu algum erro ao excluir o projeto.'];
+        }        
 	}
 
 }

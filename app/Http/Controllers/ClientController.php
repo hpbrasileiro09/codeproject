@@ -5,6 +5,7 @@ namespace CodeProject\Http\Controllers;
 use CodeProject\Repositories\ClientRepository;
 use CodeProject\Services\ClientService;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 use CodeProject\Http\Requests;
 
 class ClientController extends Controller
@@ -35,7 +36,11 @@ class ClientController extends Controller
 
     public function update(Request $request, $id)
     {
-        return $this->service->update($request->all(), $id);
+        try {
+            return $this->service->update($request->all(), $id);
+        } catch (\Exception $e) {
+            return ['error'=>true, 'Cliente não encontrado.'];
+        }        
     }
     
     public function store(Request $request)
@@ -45,20 +50,25 @@ class ClientController extends Controller
     
     public function show($id)
     {
-    	return $this->repository->find($id);
+        try {
+        	return $this->repository->find($id);
+        } catch (\Exception $e) {
+            return ['error'=>true, 'Cliente não encontrado.'];
+        }        
     }
     
     public function destroy($id)
     {
-		try
-	    {
-	    	$this->repository->find($id)->delete();
-	        return response()->json(['OK']);
-	    }
-	    catch (\Exception $e)
-	    {
-	        return response()->json(['NOK' => $e->getMessage()]);
-	    }    	
+        try {
+            $this->repository->find($id)->delete();
+            return ['success'=>true, 'Cliente deletado com sucesso!'];
+        } catch (QueryException $e) {
+            return ['error'=>true, 'Cliente não pode ser apagado pois existe um ou mais projetos vinculados a ele.'];
+        } catch (ModelNotFoundException $e) {
+            return ['error'=>true, 'Cliente não encontrado.'];
+        } catch (\Exception $e) {
+            return ['error'=>true, 'Ocorreu algum erro ao excluir o cliente.'];
+        }
 	}
 
 }
