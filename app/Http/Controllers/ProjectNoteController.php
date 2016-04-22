@@ -40,25 +40,30 @@ class ProjectNoteController extends Controller
 
     public function update(Request $request, $id, $noteId)
     {
-        return $this->service->update($request->all(), $noteId);
+        try {
+            return $this->service->update($request->all(), $noteId);
+        } catch (Exception $e) {
+            return ['status' => false, 'message' => 'Não foi possível atualizar a nota'];
+        }
     }
     
     public function show($id, $noteId)
     {
-        return $this->repository->findWhere(['project_id' => $id, 'id' => $noteId]);
+        try {
+            return $this->repository->findWhere(['project_id' => $id, 'id' => $noteId]);
+        } catch (Exception $e) {
+            return ['status' => false, 'message' => 'Não foi possível exibir a nota'];
+        }
     }
     
     public function destroy($id, $noteId)
     {
-		try
-	    {
-	    	$this->repository->find($noteId)->delete();
-	        return response()->json(['OK']);
-	    }
-	    catch (\Exception $e)
-	    {
-	        return response()->json(['NOK' => $e->getMessage()]);
-	    }    	
+        try {
+            $this->repository->find($noteId)->delete();
+            return ['status' => true, 'message' => 'Nota excluída com sucesso'];
+        } catch (\Exception $e) {
+            return ['status' => false, 'message' => 'Não foi possível excluir a nota'];
+        }        
 	}
 
 }
