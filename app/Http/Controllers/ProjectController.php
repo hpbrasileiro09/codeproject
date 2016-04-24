@@ -50,7 +50,7 @@ class ProjectController extends Controller
     public function show($id)
     {
         try {
-            return $this->repository->find($id);
+            return $this->repository->with(['client','owner'])->find($id);
         } catch (\Exception $e) {
             return ['status' => false, 'message' => 'Não foi possível exibir o projeto'];
         }
@@ -66,9 +66,9 @@ class ProjectController extends Controller
         }        
 	}
 
-    public function addMember($id, $memberId)
+    public function addMember($id, $userId)
     {
-        return $this->service->addMember($id, $memberId);
+        return $this->service->addMember($id, $userId);
     }
 
     public function removeMember($id, $memberId)
@@ -76,9 +76,9 @@ class ProjectController extends Controller
         return $this->service->removeMember($id, $memberId);
     }
 
-    public function isMember($id, $memberId)
+    public function isMember($id, $userId)
     {
-        if ($this->service->isMember($id, $memberId)) {
+        if ($this->service->isMember($id, $userId) == true) {
             return ['status' => true, 'message' => 'Usuário é membro do projeto'];
         }
         return ['status' => false, 'message' => 'Usuário não é membro deste projeto'];

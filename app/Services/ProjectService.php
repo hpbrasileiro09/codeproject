@@ -3,6 +3,7 @@
 namespace CodeProject\Services;
 
 use CodeProject\Repositories\ProjectRepository;
+use CodeProject\Repositories\ProjectMemberRepository;
 use CodeProject\Validators\ProjectValidator;
 
 use \Prettus\Validator\Exceptions\ValidatorException;
@@ -16,15 +17,22 @@ class ProjectService
 	protected $repository;
 
 	/**
+	* @var ProjectMemberRepository
+	*/
+	protected $member;
+
+	/**
 	* @var ProjectValidator
 	*/
 	protected $validator;
 
 	public function __construct(
 		ProjectRepository $repository,
+		ProjectMemberRepository $member,
 		ProjectValidator $validator)
 	{
 		$this->repository = $repository;
+		$this->member = $member;
 		$this->validator = $validator;
 	}
 	
@@ -54,16 +62,15 @@ class ProjectService
 		}
 	}
 
-	public function addMember($id, $memberId)
+	public function addMember($id, $userId)
 	{
 		$data = [
 			'project_id' => $id,
-			'member_id' => $memberId,
+			'member_id' => $userId,
 		];
 		try {
-			$project = $this->repository->skipPresenter()->find($id);
-			$project->members()->create($data);
-		} catch(ValidatorException $e) {
+			$this->member->create($data);
+		} catch(\Exception $e) {
 			return ['status' => false, 'message' => 'Problema ao criar novo membro'];
 		}
 		return ['status' => true, 'message' => 'Membro adicionado com sucesso'];
@@ -71,34 +78,22 @@ class ProjectService
 
 	public function removeMember($id, $memberId)
 	{
-        $project = $this->repository->find($id);
-
-        foreach($project->members as $member) 
-        {
-            if ($member->id == $memberId)
-            {
-				try {
-					$member->delete();
-				} catch(ValidatorException $e) {
-			        return ['status' => false, 'message' => 'Problema ao remover membro'];
-				}
-                return ['status' => true, 'message' => 'Membro excluído com sucesso'];
-            }
+ 		try {
+            $this->member->find($memberId)->delete();
+        	return ['status' => true, 'message' => 'Membro excluído com sucesso'];
+        } catch (\Exception $e) {
+            return ['status' => false, 'message' => 'Problema ao remover membro'];
         }
-
-        return ['status' => false, 'message' => 'Membro não encontrado'];
 	}
 
-    public function isMember($id, $memberId)
+    public function isMember($id, $userId)
     {
-        $project = $this->repository->find($id);
-
-        foreach($project->members as $member) 
-        {
-            if ($member->id == $memberId)
-            {
-                return true;
-            }
+ 		try {
+            if (count($this->member->findWhere(['project_id' => $id, 'member_id' => $userId]))) {
+            	return true;
+        	}
+        } catch (\Exception $e) {
+            return false;
         }
         return false;
     }
