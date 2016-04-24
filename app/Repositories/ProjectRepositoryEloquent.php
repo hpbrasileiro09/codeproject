@@ -35,7 +35,6 @@ class ProjectRepositoryEloquent extends BaseRepository implements ProjectReposit
         return ProjectValidator::class;
     }
 
-
     /**
      * Boot up the repository, pushing criteria
      */
@@ -43,4 +42,5 @@ class ProjectRepositoryEloquent extends BaseRepository implements ProjectReposit
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
+
 }

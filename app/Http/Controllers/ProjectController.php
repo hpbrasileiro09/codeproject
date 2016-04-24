@@ -66,4 +66,22 @@ class ProjectController extends Controller
         }        
 	}
 
+    public function addMember($id, $memberId)
+    {
+        return $this->service->addMember($id, $memberId);
+    }
+
+    public function removeMember($id, $memberId)
+    {
+        return $this->service->removeMember($id, $memberId);
+    }
+
+    public function isMember($id, $memberId)
+    {
+        if ($this->service->isMember($id, $memberId)) {
+            return ['status' => true, 'message' => 'Usuário é membro do projeto'];
+        }
+        return ['status' => false, 'message' => 'Usuário não é membro deste projeto'];
+    }
+
 }

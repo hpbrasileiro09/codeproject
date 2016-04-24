@@ -54,43 +54,53 @@ class ProjectService
 		}
 	}
 
-	public function addMember(array $data)
+	public function addMember($id, $memberId)
 	{
+		$data = [
+			'project_id' => $id,
+			'member_id' => $memberId,
+		];
 		try {
-			$this->validator->with($data)->passesOrFail();
-			$this->repository->create($data);
+			$project = $this->repository->skipPresenter()->find($id);
+			$project->members()->create($data);
 		} catch(ValidatorException $e) {
-			return [
-				'error' => true,
-				'message' => $e->getMessageBag()
-			];
+			return ['status' => false, 'message' => 'Problema ao criar novo membro'];
 		}
+		return ['status' => true, 'message' => 'Membro adicionado com sucesso'];
 	}
 
-	public function removeMember(array $data)
+	public function removeMember($id, $memberId)
 	{
-		try {
-			$this->validator->with($data)->passesOrFail();
-			$this->repository->create($data);
-		} catch(ValidatorException $e) {
-			return [
-				'error' => true,
-				'message' => $e->getMessageBag()
-			];
-		}
+        $project = $this->repository->find($id);
+
+        foreach($project->members as $member) 
+        {
+            if ($member->id == $memberId)
+            {
+				try {
+					$member->delete();
+				} catch(ValidatorException $e) {
+			        return ['status' => false, 'message' => 'Problema ao remover membro'];
+				}
+                return ['status' => true, 'message' => 'Membro excluído com sucesso'];
+            }
+        }
+
+        return ['status' => false, 'message' => 'Membro não encontrado'];
 	}
 
-	public function isMember(array $data)
-	{
-		try {
-			$this->validator->with($data)->passesOrFail();
-			$this->repository->create($data);
-		} catch(ValidatorException $e) {
-			return [
-				'error' => true,
-				'message' => $e->getMessageBag()
-			];
-		}
-	}
+    public function isMember($id, $memberId)
+    {
+        $project = $this->repository->find($id);
+
+        foreach($project->members as $member) 
+        {
+            if ($member->id == $memberId)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
