@@ -54,4 +54,43 @@ class ProjectService
 		}
 	}
 
+	public function addMember(array $data)
+	{
+		try {
+			$this->validator->with($data)->passesOrFail();
+			$this->repository->create($data);
+		} catch(ValidatorException $e) {
+			return [
+				'error' => true,
+				'message' => $e->getMessageBag()
+			];
+		}
+	}
+
+	public function removeMember(array $data)
+	{
+		try {
+			$this->validator->with($data)->passesOrFail();
+			$this->repository->create($data);
+		} catch(ValidatorException $e) {
+			return [
+				'error' => true,
+				'message' => $e->getMessageBag()
+			];
+		}
+	}
+
+	public function isMember(array $data)
+	{
+		try {
+			$this->validator->with($data)->passesOrFail();
+			$this->repository->create($data);
+		} catch(ValidatorException $e) {
+			return [
+				'error' => true,
+				'message' => $e->getMessageBag()
+			];
+		}
+	}
+
 }

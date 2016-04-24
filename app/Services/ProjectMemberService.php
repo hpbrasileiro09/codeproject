@@ -7,7 +7,7 @@ use CodeProject\Validators\ProjectMemberValidator;
 
 use \Prettus\Validator\Exceptions\ValidatorException;
 
-class ProjectMember 
+class ProjectMemberService 
 {
 
 	/**

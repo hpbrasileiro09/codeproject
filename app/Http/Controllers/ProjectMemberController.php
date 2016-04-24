@@ -42,7 +42,7 @@ class ProjectMemberController extends Controller
     {
         try {
             return $this->service->update($request->all(), $memberId);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return ['status' => false, 'message' => 'Não foi possível atualizar o membro'];
         }
     }
@@ -51,7 +51,7 @@ class ProjectMemberController extends Controller
     {
         try {
             return $this->repository->findWhere(['project_id' => $id, 'id' => $memberId]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return ['status' => false, 'message' => 'Não foi possível exibir o membro'];
         }
     }

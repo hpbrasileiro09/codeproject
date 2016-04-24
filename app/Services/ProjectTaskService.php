@@ -7,7 +7,7 @@ use CodeProject\Validators\ProjectTaskValidator;
 
 use \Prettus\Validator\Exceptions\ValidatorException;
 
-class ProjectTask 
+class ProjectTaskService 
 {
 
 	/**

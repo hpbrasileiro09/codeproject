@@ -42,7 +42,7 @@ class ProjectTaskController extends Controller
     {
         try {
             return $this->service->update($request->all(), $taskId);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return ['status' => false, 'message' => 'Não foi possível atualizar a tarefa'];
         }
     }
@@ -51,7 +51,7 @@ class ProjectTaskController extends Controller
     {
         try {
             return $this->repository->findWhere(['project_id' => $id, 'id' => $taskId]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return ['status' => false, 'message' => 'Não foi possível exibir a tarefa'];
         }
     }
