@@ -42,41 +42,31 @@ class ProjectController extends Controller
 
     public function update(Request $request, $id)
     {
-        if ($this->checkProjectPermissions($id) == false)
-        {
-            return response()->json([ 'error' => 'Access forbidden' ]);
+        try {
+            return $this->service->update($request->all(), $id);
+        } catch (\Exception $e) {
+            return ['status' => false, 'message' => 'Não foi possível atualizar o projeto'];
         }
-
-        return $this->service->update($request->all(), $id);
     }
     
     public function show($id)
     {
-        if ($this->checkProjectPermissions($id) == false)
-        {
-            return response()->json([ 'error' => 'Access forbidden' ]);
+        try {
+            return $this->repository->with(['client','owner'])->find($id);
+        } catch (\Exception $e) {
+            return ['status' => false, 'message' => 'Não foi possível exibir o projeto'];
         }
-
-    	return $this->repository->find($id);
     }
     
     public function destroy($id)
     {
-        if ($this->checkProjectPermissions($id) == false)
-        {
-            return response()->json([ 'error' => 'Access forbidden' ]);
-        }
-
-		try
-	    {
-	    	$this->repository->find($id)->delete();
-	        return response()->json(['OK']);
-	    }
-	    catch (\Exception $e)
-	    {
-	        return response()->json(['NOK' => $e->getMessage()]);
-	    }    	
-	}
+        try {
+            $this->repository->find($id)->delete();
+            return ['status' => true, 'message' => 'Projeto excluído com sucesso'];
+        } catch (\Exception $e) {
+            return ['status' => false, 'message' => 'Não foi possível excluir o projeto'];
+        }        
+    }
 
     private function checkProjectOwner($projectId)
     {
@@ -101,4 +91,23 @@ class ProjectController extends Controller
         }
         return false;
     }
+
+    public function addMember($id, $userId)
+    {
+        return $this->service->addMember($id, $userId);
+    }
+
+    public function removeMember($id, $memberId)
+    {
+        return $this->service->removeMember($id, $memberId);
+    }
+
+    public function isMember($id, $userId)
+    {
+        if ($this->service->isMember($id, $userId) == true) {
+            return ['status' => true, 'message' => 'Usuário é membro do projeto'];
+        }
+        return ['status' => false, 'message' => 'Usuário não é membro deste projeto'];
+    }
+
 }

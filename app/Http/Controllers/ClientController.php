@@ -30,35 +30,40 @@ class ClientController extends Controller
     
     public function index() 
     {
-    	return $this->repository->all();
+        return $this->repository->all();
     }
     
     public function store(Request $request)
     {
-    	return $this->service->create($request->all());
+        return $this->service->create($request->all());
     }
 
     public function update(Request $request, $id)
     {
-        return $this->service->update($request->all(), $id);
+        try {
+            return $this->service->update($request->all(), $id);
+        } catch (\Exception $e) {
+            return ['status' => false, 'message' => 'Não foi possível atualizar o cliente'];
+        }
     }
     
     public function show($id)
     {
-    	return $this->repository->find($id);
+        try {
+            return $this->repository->find($id);
+        } catch (\Exception $e) {
+            return ['status' => false, 'message' => 'Não foi possível exibir o cliente'];
+        }
     }
     
     public function destroy($id)
     {
-		try
-	    {
-	    	$this->repository->find($id)->delete();
-	        return response()->json(['OK']);
-	    }
-	    catch (\Exception $e)
-	    {
-	        return response()->json(['NOK' => $e->getMessage()]);
-	    }    	
-	}
+        try {
+            $this->repository->find($id)->delete();
+            return ['status' => true, 'message' => 'Cliente excluído com sucesso'];
+        } catch (\Exception $e) {
+            return ['status' => false, 'message' => 'Não foi possível excluir o cliente'];
+        }        
+    }
 
 }

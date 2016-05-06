@@ -3,6 +3,7 @@
 namespace CodeProject\Services;
 
 use CodeProject\Repositories\ProjectRepository;
+use CodeProject\Repositories\ProjectMemberRepository;
 use CodeProject\Validators\ProjectValidator;
 
 use \Illuminate\Contracts\Filesystem\Factory as Storage;
@@ -29,17 +30,24 @@ class ProjectService
 	protected $filesystem;
 
 	/**
+	* @var ProjectMemberRepository
+	*/
+	protected $member;
+
+	/**
 	* @var Storage
 	*/
 	protected $storage;
 
 	public function __construct(
 		ProjectRepository $repository,
+		ProjectMemberRepository $member,
 		ProjectValidator $validator,
 		Filesystem $filesystem,
 		Storage $storage)
 	{
 		$this->repository = $repository;
+		$this->member = $member;
 		$this->validator = $validator;
 		$this->filesystem = $filesystem;
 		$this->storage = $storage;
@@ -70,6 +78,42 @@ class ProjectService
 			];
 		}
 	}
+
+	public function addMember($id, $userId)
+	{
+		$data = [
+			'project_id' => $id,
+			'member_id' => $userId,
+		];
+		try {
+			$this->member->create($data);
+		} catch(\Exception $e) {
+			return ['status' => false, 'message' => 'Problema ao criar novo membro'];
+		}
+		return ['status' => true, 'message' => 'Membro adicionado com sucesso'];
+	}
+
+	public function removeMember($id, $memberId)
+	{
+ 		try {
+            $this->member->find($memberId)->delete();
+        	return ['status' => true, 'message' => 'Membro excluído com sucesso'];
+        } catch (\Exception $e) {
+            return ['status' => false, 'message' => 'Problema ao remover membro'];
+        }
+	}
+
+    public function isMember($id, $userId)
+    {
+ 		try {
+            if (count($this->member->findWhere(['project_id' => $id, 'member_id' => $userId]))) {
+            	return true;
+        	}
+        } catch (\Exception $e) {
+            return false;
+        }
+        return false;
+    }
 
 	public function createFile(array $data)
 	{
