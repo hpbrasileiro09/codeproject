@@ -4,6 +4,7 @@ namespace CodeProject\Services;
 
 use CodeProject\Repositories\ProjectRepository;
 use CodeProject\Repositories\ProjectMemberRepository;
+use CodeProject\Validators\ProjectFileValidator;
 use CodeProject\Validators\ProjectValidator;
 
 use \Illuminate\Contracts\Filesystem\Factory as Storage;
@@ -25,6 +26,11 @@ class ProjectService
 	protected $validator;
 
 	/**
+	* @var ProjectFileValidator
+	*/
+	protected $validatorFile;
+
+	/**
 	* @var FileSystem
 	*/
 	protected $filesystem;
@@ -43,12 +49,14 @@ class ProjectService
 		ProjectRepository $repository,
 		ProjectMemberRepository $member,
 		ProjectValidator $validator,
+		ProjectFileValidator $validatorFile,
 		Filesystem $filesystem,
 		Storage $storage)
 	{
 		$this->repository = $repository;
 		$this->member = $member;
 		$this->validator = $validator;
+		$this->validatorFile = $validatorFile;
 		$this->filesystem = $filesystem;
 		$this->storage = $storage;
 	}
@@ -115,11 +123,48 @@ class ProjectService
         return false;
     }
 
+	public function removeFile($fileId, $extension)
+	{
+
+		$_file = "files/" . $fileId . "." . $extension;
+
+ 		try {
+			if ($this->storage->exists($_file))
+			{
+		        $this->storage->delete($_file);
+			} 			
+        	return true;
+        } catch (\Exception $e) {
+        	return false;
+        }
+	}
+
 	public function createFile(array $data)
 	{
+
+		try {
+            $this->validatorFile->with($data)->passesOrFail();
+        } catch (ValidatorException $e) {
+            return [
+                'error' => true,
+                'message' => $e->getMessageBag()
+            ];
+        }
+
 		$project = $this->repository->skipPresenter()->find($data['project_id']);
 		$projectFile = $project->files()->create($data);
 
-        $this->storage->put($projectFile->id.".".$data['extension'], $this->filesystem->get($data['file']));
+ 		try {
+	        $this->storage->put("files/".$projectFile->id.".".$data['extension'], $this->filesystem->get($data['file']));
+        	return [
+        		'status' => true, 
+        		'message' => 'File uploaded with success !',
+        	];
+        } catch (\Exception $e) {
+            return [
+            	'status' => false, 
+            	'message' => 'File uploaded failed !',
+            ];
+        }
 	}
 }

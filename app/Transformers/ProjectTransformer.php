@@ -16,6 +16,7 @@ class ProjectTransformer extends TransformerAbstract
 			'project_id' => $project->id,
 			'client_id' => $project->client_id,
 			'owner_id' => $project->owner_id,
+			'members' => $project->members,
 			'project' => $project->name,
 			'description' => $project->description,
 			'progress' => $project->progress,
@@ -28,4 +29,5 @@ class ProjectTransformer extends TransformerAbstract
 	{
 		return $this->collection($project->members, new ProjectMemberTransformer());
 	}
+
 }

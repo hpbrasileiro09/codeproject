@@ -2,16 +2,18 @@
 
 namespace CodeProject\Transformers;
 
-use CodeProject\Entities\User;
+use CodeProject\Entities\ProjectNote;
 use League\Fractal\TransformerAbstract;
 
 class ProjectNoteTransformer extends TransformerAbstract
 {
-	public function transform(User $member)
+	public function transform(ProjectNote $projectNote)
 	{
 		return [
-			'member_id' => $member->id,
-			'member_name' => $member->name,
+			'projectNote_id' => $projectNote->id,
+			'project_id' => $projectNote->project_id,
+			'title' => $projectNote->title,
+			'note' => $projectNote->note,
 		];
 	}
 }
