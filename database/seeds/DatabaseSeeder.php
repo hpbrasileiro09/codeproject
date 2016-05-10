@@ -11,12 +11,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-    	//Model::unguard();
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0'); // disable foreign key constraints
 
-        //\CodeProject\Entities\ProjectNote::truncate();
-        //\CodeProject\Entities\Project::truncate();
-        //\CodeProject\Entities\Client::truncate();
-        //\CodeProject\Entities\User::truncate();
+        DB::table('project_files')->truncate();
+
+        \CodeProject\Entities\ProjectMember::truncate();
+        \CodeProject\Entities\ProjectTask::truncate();
+        \CodeProject\Entities\ProjectNote::truncate();
+        \CodeProject\Entities\Project::truncate();
+        \CodeProject\Entities\Client::truncate();
+        \CodeProject\Entities\User::truncate();
+
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1'); // enable foreign key constraints
 
         $this->call(UserTableSeeder::class);
         $this->call(ClientTableSeeder::class);
@@ -25,7 +31,5 @@ class DatabaseSeeder extends Seeder
         $this->call(ProjectMemberTableSeeder::class);
         $this->call(ProjectTaskTableSeeder::class);
         $this->call(OAuthClientSeeder::class);
-
-        //Mode::reguard();
     }
 }
